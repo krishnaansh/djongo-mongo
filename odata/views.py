@@ -1,19 +1,49 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-# Create your views here.
-
-from odata.models import Product, Customer
-from odata.serializers import ProductSerializers
+from django_sitemaps import Sitemap
 from rest_framework import viewsets
 from rest_framework.response import Response
-from django_sitemaps import Sitemap
 
+from odata.models import Product, Customer, Category, Shipper, Order, OrderDetail
+from odata.serializers import ProductSerializers, CustomerSerializers, CategorySerializers, ShipperSerializers
+from odata.serializers import OrderSerializers, OrderDetailSerializers
+
+# Create your views here.
 class ProductViewSet(viewsets.ModelViewSet):
     """ This viewset is used for crud operations"""
     
     queryset = Product.objects.all()
     serializer_class = ProductSerializers    
 
+class CustomerViewSet(viewsets.ModelViewSet):
+    """ This viewset is used for crud operations"""
+    
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializers    
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    """ This viewset is used for crud operations"""
+    
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializers    
+
+class ShipperViewSet(viewsets.ModelViewSet):
+    """ This viewset is used for crud operations"""
+    
+    queryset = Shipper.objects.all()
+    serializer_class = ShipperSerializers    
+
+class OrderViewSet(viewsets.ModelViewSet):
+    """ This viewset is used for crud operations"""
+    
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializers    
+
+class OrderDetailViewSet(viewsets.ModelViewSet):
+    """ This viewset is used for crud operations"""
+    
+    queryset = OrderDetail.objects.all()
+    serializer_class = OrderDetailSerializers            
 # from app.pages.sitemaps import PagesSitemap
 
 # def sitemap(request):
