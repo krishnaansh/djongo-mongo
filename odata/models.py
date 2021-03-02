@@ -34,6 +34,7 @@ PAYMENT_MODE = (
 
 class Category(models.Model):    
     objects = models.DjongoManager()
+    id = models.AutoField(primary_key=True)
     category_name = models.CharField(max_length=100,null=True,blank=True)
     description = models.TextField(max_length=300,null=True,blank=True)
     picture = models.ImageField(null=True,blank=True, upload_to="images")
@@ -48,6 +49,7 @@ class Category(models.Model):
 class Customer(models.Model):
     """This model is used for customer"""
     # customer_id = models.CharField(max_length=10,null=True,blank=True)
+    id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100,null=True,blank=True)
     last_name = models.CharField(max_length=100,null=True,blank=True)
@@ -137,6 +139,7 @@ class Product(models.Model):
     """This models is used for Products Details."""
     # product_id = models.CharField(max_length=20)
     # objects = models.DjongoManager()
+    id = models.AutoField(primary_key=True)
     sku = models.CharField(max_length=100,null=True,blank=True)
     idsku = models.CharField(max_length=50,null=True,blank=True)
     vendor_product_id = models.CharField(max_length=50,null=True,blank=True)
@@ -173,6 +176,7 @@ class Product(models.Model):
 
     
 class Shipper(models.Model):
+    id = models.AutoField(primary_key=True)
     company_name = models.CharField(max_length=100)
     phone = models.CharField(max_length=10)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
@@ -180,6 +184,7 @@ class Shipper(models.Model):
 
 class Order(models.Model):
     # order_id = models.CharField(max_length=50,null=True,blank=True)
+    id = models.AutoField(primary_key=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     order_number = models.CharField(max_length=100,null=True,blank=True)
     payment_id = models.CharField(max_length=50,null=True,blank=True)
@@ -200,7 +205,11 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
 
+    def __str__(self):
+        return self.order_number
+
 class Payment(models.Model):
+    id = models.AutoField(primary_key=True)
     order = models.ForeignKey(Order, on_delete=models.DO_NOTHING)
     payment_type = models.CharField(max_length=10,choices=PAYMENT_MODE)
     allowed = models.BooleanField(default=False)
@@ -209,6 +218,7 @@ class Payment(models.Model):
 
     
 class OrderDetail(models.Model):
+    id = models.AutoField(primary_key=True)
     order = models.ForeignKey(Order, on_delete=models.DO_NOTHING)
     product = models.ForeignKey(Product, on_delete=models.DO_NOTHING, null=False, blank=False)
     order_number = models.CharField(max_length=100,null=True,blank=True)
@@ -225,5 +235,7 @@ class OrderDetail(models.Model):
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
     
+    def __str__(self):
+        return self.order.order_number
     
     
