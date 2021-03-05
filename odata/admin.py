@@ -58,7 +58,8 @@ class ProductAdmin(admin.ModelAdmin):
     #     return super(ProductAdmin, self).render_change_form(request, context, *args, **kwargs)
 
     def image_tag(self,obj):
-        image_str = '<img src="{0}" style="width: 45px; height:45px;" />'.format(obj.picture.url)
+        if obj.picture:
+            image_str = '<img src="{0}" style="width: 45px; height:45px;" />'.format(obj.picture.url)
         product_images = ProductImage.objects.filter(product=obj)
 
         if product_images:
