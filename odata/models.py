@@ -1,8 +1,9 @@
 # from django.db import models
 # 
 # Create your models here.
+from django.contrib import admin
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.shortcuts import reverse
 from djongo import models
@@ -84,7 +85,12 @@ class Customer(models.Model):
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     def __str__(self):
-        return self.first_name+' '+self.last_name
+        if self.first_name is not None and self.last_name is not None:
+            return self.first_name+' '+self.last_name
+        elif self.first_name is not None:
+            return self.first_name
+        else:
+            return ''
 
 @receiver(post_save, sender=User)
 def create_user_customer(sender, instance, created, **kwargs):
@@ -173,6 +179,15 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse("products", args=[str(self.id)])
     
+    
+class ProductImage(models.Model):
+    id = models.AutoField(primary_key=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    image = models.ImageField(null=True,blank=True, upload_to="images")
+    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
+    
+
 
     
 class Shipper(models.Model):
