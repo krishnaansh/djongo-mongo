@@ -1,14 +1,16 @@
+from string import Template
 from django.contrib import admin
 from odata.models import *
 from django.contrib.auth.models import Group, User
 from django.utils.html import format_html
 from django import forms
-# Register your models here.
-from string import Template
 from django.utils.safestring import mark_safe
 from django.forms import ImageField
+from import_export.admin import ImportExportModelAdmin
+from odata.exportimport.productresources import ProductResources
 
 
+# Register your models here.
 class PictureWidget(forms.widgets.FileInput):
     def render(self, name, value, attrs=None, **kwargs):
         input_html = super().render(name, value, attrs=None, **kwargs)
@@ -43,7 +45,8 @@ class ProductModelInline(admin.TabularInline):
 
     image_preview.short_description = 'Preview'
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    resource_class = ProductResources
     inlines= [ProductModelInline ]
     list_display = ('product_name','current_order','quantity_per_unit','unit_price', 'msrp','image_tag','created_at', 'updated_at')
     form = ProductModelForm
@@ -58,6 +61,7 @@ class ProductAdmin(admin.ModelAdmin):
     #     return super(ProductAdmin, self).render_change_form(request, context, *args, **kwargs)
 
     def image_tag(self,obj):
+        image_str = ''
         if obj.picture:
             image_str = '<img src="{0}" style="width: 45px; height:45px;" />'.format(obj.picture.url)
         product_images = ProductImage.objects.filter(product=obj)
