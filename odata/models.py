@@ -33,9 +33,10 @@ PAYMENT_MODE = (
     ('offline', 'offline'),
 )
 
-class Category(models.Model):    
+class Categories(models.Model):    
     objects = models.DjongoManager()
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)    
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True)
     category_name = models.CharField(max_length=100,null=True,blank=True)
     description = models.TextField(max_length=300,null=True,blank=True)
     picture = models.ImageField(null=True,blank=True, upload_to="images")
@@ -45,6 +46,10 @@ class Category(models.Model):
 
     def __str__(self):
         return self.category_name
+    
+    class Meta:
+        db_table = 'odata_category'
+    
 
 
 class Customer(models.Model):
@@ -151,7 +156,7 @@ class Product(models.Model):
     vendor_product_id = models.CharField(max_length=50,null=True,blank=True)
     product_name = models.CharField(max_length=100)    
     # supplier_id = models.ForeignKey(Suppliers, on_delete=models.PROTECT) # It will foregin key of supplier
-    category_id = models.ForeignKey(Category, on_delete=models.PROTECT)
+    category_id = models.ForeignKey(Categories, on_delete=models.PROTECT)
     quantity_per_unit = models.IntegerField()
     unit_price = models.FloatField()
     msrp = models.CharField(max_length=100)

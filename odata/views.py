@@ -4,7 +4,7 @@ from django_sitemaps import Sitemap
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from odata.models import Product, Customer, Category, Shipper, Order, OrderDetail
+from odata.models import Product, Customer, Categories, Shipper, Order, OrderDetail
 from odata.serializers import ProductSerializers, CustomerSerializers, CategorySerializers, ShipperSerializers
 from odata.serializers import OrderSerializers, OrderDetailSerializers
 
@@ -24,7 +24,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     """ This viewset is used for crud operations"""
     
-    queryset = Category.objects.all()
+    queryset = Categories.objects.all()
     serializer_class = CategorySerializers    
 
 class ShipperViewSet(viewsets.ModelViewSet):

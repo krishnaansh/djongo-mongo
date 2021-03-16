@@ -2,7 +2,7 @@ from django.contrib.sitemaps import Sitemap
 # from django.core.urlresolvers import reverse
 from django.shortcuts import reverse
 #
-from .models import Category, Product, Order, Shipper, Customer
+from .models import Categories, Product, Order, Shipper, Customer
 
 # class Static_Sitemap(Sitemap):
 
@@ -22,7 +22,7 @@ class Category_Sitemap(Sitemap):
     priority = 0.7
 
     def items(self):
-        return Category.objects.all()
+        return Categories.objects.all()
 
     
 

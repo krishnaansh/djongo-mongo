@@ -73,7 +73,7 @@ class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         return format_html(image_str)
 
 # admin.site.register(Suppliers)
-admin.site.register(Category)
+admin.site.register(Categories)
 admin.site.register(Shipper)
 admin.site.register(Order)
 admin.site.register(Payment)
