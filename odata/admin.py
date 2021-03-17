@@ -73,7 +73,13 @@ class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         return format_html(image_str)
 
 # admin.site.register(Suppliers)
-admin.site.register(Categories)
+@admin.register(Categories)
+class CategoryAdmin(admin.ModelAdmin):        
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(CategoryAdmin, self).get_form(request, obj, **kwargs)
+        form.base_fields['parent'].widget.can_add_related = False
+        return form
+
 admin.site.register(Shipper)
 admin.site.register(Order)
 admin.site.register(Payment)
