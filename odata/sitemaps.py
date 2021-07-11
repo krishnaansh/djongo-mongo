@@ -2,7 +2,7 @@ from django.contrib.sitemaps import Sitemap
 # from django.core.urlresolvers import reverse
 from django.shortcuts import reverse
 #
-from .models import Categories, Product, Order, Shipper, Customer
+from .models import Categories, Product, Customer
 
 # class Static_Sitemap(Sitemap):
 
@@ -41,36 +41,12 @@ class Product_Sitemap(Sitemap):
     def lastmod(self, obj): 
         return obj.updated_at
 
-class Order_Sitemap(Sitemap):
-    changefreq = "daily"
-    priority = 0.7
-
-    def items(self):
-        return Order.objects.all()
-
-    
-
-    def lastmod(self, obj): 
-        return obj.updated_at
-
 class Customer_Sitemap(Sitemap):
     changefreq = "daily"
     priority = 0.7
 
     def items(self):
         return Customer.objects.all()
-
-    
-
-    def lastmod(self, obj): 
-        return obj.updated_at
-
-class Shipper_Sitemap(Sitemap):
-    changefreq = "daily"
-    priority = 0.7
-
-    def items(self):
-        return Shipper.objects.all()
 
     
 

@@ -3,8 +3,7 @@ from django.urls import path, include
 
 from rest_framework import routers
 from rest_framework.routers import SimpleRouter, DefaultRouter, Route, DynamicRoute
-from odata.views import ProductViewSet, CustomerViewSet, CategoryViewSet, ShipperViewSet
-from odata.views import OrderViewSet, OrderDetailViewSet
+from odata.views import ProductViewSet, CustomerViewSet, CategoryViewSet
 
 
 
@@ -54,9 +53,6 @@ router = CustomSimpleRouter()
 product_list = ProductViewSet.as_view(viewset_dict)
 customer_list = CustomerViewSet.as_view(viewset_dict)
 category_list = CategoryViewSet.as_view(viewset_dict)
-shipper_list = ShipperViewSet.as_view(viewset_dict)
-order_list = OrderViewSet.as_view(viewset_dict)
-orderdetail_list = OrderDetailViewSet.as_view(viewset_dict)
 
 
 router = routers.DefaultRouter()
@@ -76,9 +72,6 @@ sitemaps_dict = {
 router.register(r"products", ProductViewSet),
 router.register(r"customers", CustomerViewSet),
 router.register(r"category", CategoryViewSet),
-router.register(r"shipper", ShipperViewSet),
-router.register(r"orders", OrderViewSet),
-router.register(r"orderdetails", OrderDetailViewSet),
 urlpatterns = [
     # path("api/", include(router.urls)),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps_dict},

@@ -1,5 +1,4 @@
 from string import Template
-from django.contrib import admin
 from odata.models import *
 from django.contrib.auth.models import Group, User
 from django.utils.html import format_html
@@ -8,7 +7,8 @@ from django.utils.safestring import mark_safe
 from django.forms import ImageField
 from import_export.admin import ImportExportModelAdmin
 from odata.exportimport.productresources import ProductResources
-
+from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 # Register your models here.
 class PictureWidget(forms.widgets.FileInput):
@@ -23,15 +23,14 @@ class ProductModelForm(forms.ModelForm):
     picture = ImageField(widget=PictureWidget)
     class Meta:
         model = Product
-        fields = '__all__' 
+        fields = '__all__'
+
+
 class ProductImageAdmin(admin.StackedInline):
     model = ProductImage
 
-
-admin.site.register(Customer)
-from django.contrib import admin
-from django.utils.safestring import mark_safe
-
+class ProductVariantAdmin(admin.StackedInline):
+    model = ProductVariant
 class ProductModelInline(admin.TabularInline):
     model = ProductImage
     readonly_fields = ('image_preview',)
@@ -47,19 +46,13 @@ class ProductModelInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     resource_class = ProductResources
-    inlines= [ProductModelInline ]
-    list_display = ('product_name','current_order','quantity_per_unit','unit_price', 'msrp','image_tag','created_at', 'updated_at')
+    inlines= [ProductModelInline, ProductVariantAdmin ]
+    list_display = ('product_name','quantity','price', 'msrp','image_tag','created_at', 'updated_at')
     form = ProductModelForm
 
-    # def render_change_form(self, request, context, *args, **kwargs):
-    #     #here we define a custom template
-    #     self.change_form_template = 'contapp/change_form_template.html'
-    #     extra = {
-    #         "help_text" : "To delete multiple image select the checkbox and do save"
-    #     }
-    #     context.update(extra)
-    #     return super(ProductAdmin, self).render_change_form(request, context, *args, **kwargs)
-
+    class Media:
+        js = ('js/tinmc.js',)
+        
     def image_tag(self,obj):
         image_str = ''
         if obj.picture:
@@ -72,7 +65,6 @@ class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     image_str += ' <img src="{0}" style="width: 45px; height:45px;" />'.format(pro_img.image.url)
         return format_html(image_str)
 
-# admin.site.register(Suppliers)
 @admin.register(Categories)
 class CategoryAdmin(admin.ModelAdmin):        
     def get_form(self, request, obj=None, **kwargs):
@@ -80,10 +72,19 @@ class CategoryAdmin(admin.ModelAdmin):
         form.base_fields['parent'].widget.can_add_related = False
         return form
 
-admin.site.register(Shipper)
-admin.site.register(Order)
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    exclude = ('user',)
+    def save_model(self, request, obj, form, change):
+        import random, string
+        x = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+        user = User.objects.create(username=x)
+        obj.user = user
+        super().save_model(request, obj, form, change)
+    
+
 admin.site.register(Payment)
-admin.site.register(OrderDetail)
 # UnRegister your model.
 # admin.site.unregister(User)
 # admin.site.unregister(Group)

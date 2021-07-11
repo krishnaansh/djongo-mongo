@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from odata.models import Product, Customer, Categories, Shipper, Order, OrderDetail
+from odata.models import Product, Customer, Categories
 
 class ProductSerializers(serializers.ModelSerializer):
     class Meta:
@@ -51,18 +51,4 @@ class CategorySerializers(serializers.ModelSerializer):
     class Meta:
         model = Categories
         fields = '__all__'
-
-class ShipperSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = Shipper
-        fields = '__all__'
-
-class OrderSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = '__all__'
-
-class OrderDetailSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = OrderDetail
-        fields = '__all__'
+        
