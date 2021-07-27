@@ -1,14 +1,14 @@
-from string import Template
-from odata.models import *
-from django.contrib.auth.models import Group, User
-from django.utils.html import format_html
 from django import forms
-from django.utils.safestring import mark_safe
-from django.forms import ImageField
-from import_export.admin import ImportExportModelAdmin
-from odata.exportimport.productresources import ProductResources
 from django.contrib import admin
+from django.forms import ImageField
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.contrib.auth.models import Group, User
+
+from import_export.admin import ImportExportModelAdmin
+
+from odata.models import *
+from odata.exportimport.productresources import ProductResources
 
 # Register your models here.
 class PictureWidget(forms.widgets.FileInput):
@@ -66,7 +66,9 @@ class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         return format_html(image_str)
 
 @admin.register(Categories)
-class CategoryAdmin(admin.ModelAdmin):        
+class CategoryAdmin(admin.ModelAdmin):
+
+    search_fields = ('category_name', )   
     def get_form(self, request, obj=None, **kwargs):
         form = super(CategoryAdmin, self).get_form(request, obj, **kwargs)
         form.base_fields['parent'].widget.can_add_related = False
@@ -85,6 +87,7 @@ class CustomerAdmin(admin.ModelAdmin):
     
 
 admin.site.register(Payment)
+admin.site.register(NewsletterSubscription)
 # UnRegister your model.
 # admin.site.unregister(User)
 # admin.site.unregister(Group)
