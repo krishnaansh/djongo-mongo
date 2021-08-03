@@ -2,11 +2,6 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from odata.models import Product, Customer, Categories, ProductImage, ProductVariant, NewsletterSubscription
 
-class ProductSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = '__all__'
-
 class ProductImageSerializers(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
@@ -17,6 +12,24 @@ class ProductVariantSerializers(serializers.ModelSerializer):
     class Meta:
         model = ProductVariant
         fields = '__all__'
+
+
+class ProductSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+        
+    def to_representation(self, instance):
+        """
+        Change in the response of api
+        """
+        rep = super(ProductSerializers, self).to_representation(instance)
+        product_image = ProductImage.objects.filter(product=instance).order_by("-id")
+        product_variant = ProductVariant.objects.filter(parent_product=instance).order_by("-id")
+        rep['product_image'] = ProductImageSerializers(product_image, many=True)
+        rep['product_variant'] = ProductVariantSerializers(product_variant, many=True)
+
+        return rep
 
 
 class NewsLetterSerializers(serializers.ModelSerializer):
