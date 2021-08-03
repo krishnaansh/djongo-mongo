@@ -49,7 +49,7 @@ class Categories(models.Model):
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     def __str__(self):
-        return self.category_name
+        return self.category_name or ''
     
     class Meta:
         db_table = 'odata_category'
@@ -141,7 +141,7 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     def __str__(self):
-        return self.product_name
+        return self.product_name or ' '
     
     def get_absolute_url(self):
         return reverse("products", args=[str(self.id)])

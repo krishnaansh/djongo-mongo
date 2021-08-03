@@ -6,18 +6,22 @@ from django.urls import path, include
 
 from rest_framework import routers
 from rest_framework.routers import SimpleRouter, Route
-from odata.views import (ProductViewSet, CustomerViewSet, CategoryViewSet,
-                         ProductImageViewSet, ProductVariantViewSet, NewsLetterViewSet)
+from odata.views import (
+    ProductViewSet,
+    CustomerViewSet,
+    CategoryViewSet,
+    PaymentViewset,    
+    NewsLetterViewSet,
+)
 
 
 viewset_dict = {
-    'get': 'list',
-    'post': 'create',
-    'get': 'retrieve',
-    'put': 'update',
-    'patch': 'partial_update',
-    'delete': 'destroy'
-
+    "get": "list",
+    "post": "create",
+    "get": "retrieve",
+    "put": "update",
+    "patch": "partial_update",
+    "delete": "destroy",
 }
 
 
@@ -63,12 +67,13 @@ router = routers.DefaultRouter()
 
 sitemaps_dict = {
     # 'category' : Category_Sitemap,
-    'product': Product_Sitemap,
+    "product": Product_Sitemap,
     # 'order' : Order_Sitemap,
 }
 
 
 router.register(r"products", ProductViewSet),
+router.register(r"payments", PaymentViewset),
 # router.register(r"products/image", ProductImageViewSet),
 # router.register(r"products/variant", ProductVariantViewSet),
 router.register(r"newsletter", NewsLetterViewSet),
@@ -76,8 +81,11 @@ router.register(r"customers", CustomerViewSet),
 router.register(r"category", CategoryViewSet),
 urlpatterns = [
     # path("api/", include(router.urls)),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps_dict},
-         name='django.contrib.sitemaps.views.sitemap'),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps_dict},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
     path("", include(router.urls)),
-
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
