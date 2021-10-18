@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from odata.models import (
     Payment,
@@ -10,7 +11,7 @@ from odata.models import (
     ProductImage,
     NewsletterSubscription,
 )
-from odata.serializers import (
+from odata.serializers.serializers import (
     ProductSerializers,
     CustomerSerializers,
     CategorySerializers,
@@ -61,6 +62,7 @@ class NewsLetterViewSet(viewsets.ModelViewSet):
 
     queryset = NewsletterSubscription.objects.all()
     serializer_class = NewsLetterSerializers
+    permission_classes = [IsAuthenticated]
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
@@ -68,6 +70,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializers
+    permission_classes = [IsAuthenticated]
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -84,3 +87,4 @@ class PaymentViewset(viewsets.ModelViewSet):
     
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializers
+    permission_classes = [IsAuthenticated]

@@ -39,7 +39,7 @@ RANKING = (
 )
 class Categories(models.Model):    
     objects = models.DjongoManager()
-    id = models.AutoField(primary_key=True)    
+    _id = models.ObjectIdField(primary_key=True)
     parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True)
     category_name = models.CharField(max_length=100,null=True,blank=True)  
     category_name_de = models.CharField(max_length=100,null=True,blank=True)  
@@ -58,7 +58,7 @@ class Categories(models.Model):
 
 class Customer(models.Model):
     """This model is used for customer"""    
-    id = models.AutoField(primary_key=True)
+    _id = models.ObjectIdField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100,null=True,blank=True)
     last_name = models.CharField(max_length=100,null=True,blank=True)    
@@ -69,7 +69,7 @@ class Customer(models.Model):
     postal_code = models.IntegerField(null=True,blank=True)
     country = models.CharField(max_length=100,null=True,blank=True)
     phone = models.CharField(max_length=10,null=True,blank=True)
-    password = models.CharField(max_length=100)
+    # password = models.CharField(max_length=100)
     salutation = models.CharField(max_length=100,null=True,blank=True)
     credit_card = models.CharField(max_length=15, null=True,blank=True)
     credit_card_type_id = models.CharField(max_length=100)
@@ -104,6 +104,15 @@ class Customer(models.Model):
         else:
             return ''
 
+
+class UserForgotPassword(models.Model):
+    _id = models.ObjectIdField(primary_key=True)
+    user = models.OneToOneField(User, related_name='reset_password_user', on_delete=models.CASCADE)
+    token = models.CharField(max_length=10)
+    is_consumed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
 # @receiver(post_save, sender=User)
 # def create_user_customer(sender, instance, created, **kwargs):
 #     if created:
@@ -117,7 +126,7 @@ class Customer(models.Model):
     
 class Product(models.Model):
     """This models is used for Products Details."""        
-    id = models.AutoField(primary_key=True)        
+    _id = models.ObjectIdField(primary_key=True)        
     vendor_product_id = models.CharField(max_length=50,null=True,blank=True)
     product_name = models.CharField(max_length=100)    
     category_id = models.ForeignKey(Categories, on_delete=models.PROTECT)
@@ -130,8 +139,8 @@ class Product(models.Model):
     size = models.CharField(max_length=100,null=True,blank=True)
     color = models.CharField(max_length=100,null=True,blank=True)
     discount = models.DecimalField(decimal_places=2, max_digits=10, verbose_name="Discount %")
-    product_availble = models.BooleanField(default=False)        
-    picture = models.ImageField(null=True,blank=True, upload_to="images")
+    product_available = models.BooleanField(default=False)        
+    picture = models.URLField(null=True,blank=True)
     ranking = models.CharField(max_length=15,choices=RANKING, null=True,blank=True)
     description = models.TextField(max_length=200, null=True,blank=True)
     description_de = models.TextField(max_length=200, blank=True, null=True)
@@ -148,31 +157,31 @@ class Product(models.Model):
     
     
 class ProductImage(models.Model):
-    id = models.AutoField(primary_key=True)
+    _id = models.ObjectIdField(primary_key=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     image_order = models.IntegerField()
-    image = models.ImageField(null=True,blank=True, upload_to="images")
+    image = models.URLField(null=True,blank=True)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
     
 
 class ProductVariant(models.Model):
-    id = models.AutoField(primary_key=True)
+    _id = models.ObjectIdField(primary_key=True)
     parent_product = models.ForeignKey(Product, on_delete=models.CASCADE)
     size = models.CharField(max_length=100)
     color = models.CharField(max_length=100)
     material = models.CharField(max_length=100)
-    image = models.ImageField(null=True, blank=True, upload_to="images")
+    image = models.URLField(null=True, blank=True)
     
 # class Shipper(models.Model):
-#     id = models.AutoField(primary_key=True)
+#     _id = models.ObjectIdField(primary_key=True)
 #     company_name = models.CharField(max_length=100)
 #     phone = models.CharField(max_length=10)
 #     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
 #     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
 
 # class Order(models.Model):    
-#     id = models.AutoField(primary_key=True)
+#     _id = models.ObjectIdField(primary_key=True)
 #     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
 #     order_number = models.CharField(max_length=100,null=True,blank=True)
 #     payment_id = models.CharField(max_length=50,null=True,blank=True)
@@ -196,7 +205,7 @@ class ProductVariant(models.Model):
 #         return self.order_number
 
 class Payment(models.Model):
-    id = models.AutoField(primary_key=True)
+    _id = models.ObjectIdField(primary_key=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     order = models.CharField(max_length=100)
     invoice = models.CharField(max_length=100)
@@ -209,7 +218,7 @@ class Payment(models.Model):
 
     
 # class OrderDetail(models.Model):
-#     id = models.AutoField(primary_key=True)
+#     _id = models.ObjectIdField(primary_key=True)
 #     order = models.ForeignKey(Order, on_delete=models.DO_NOTHING)
 #     product = models.ForeignKey(Product, on_delete=models.DO_NOTHING, null=False, blank=False)
 #     order_number = models.CharField(max_length=100,null=True,blank=True)
@@ -230,7 +239,7 @@ class Payment(models.Model):
 #         return self.order.order_number
     
 class NewsletterSubscription(models.Model):
-    id = models.AutoField(primary_key=True)
+    _id = models.ObjectIdField(primary_key=True)
     salutation = models.CharField(max_length=3)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)

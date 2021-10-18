@@ -36,7 +36,7 @@ class ProductModelInline(admin.TabularInline):
     def image_preview(self, obj):
         # ex. the name of column is "image"
         if obj.image:
-            return mark_safe('<img src="{0}" width="150" height="150" style="object-fit:contain" />'.format(obj.image.url))
+            return mark_safe('<img src="{0}" width="150" height="150" style="object-fit:contain" />'.format(obj.image))
         else:
             return '(No image)'
 
@@ -58,13 +58,13 @@ class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     def image_tag(self,obj):
         image_str = ''
         if obj.picture:
-            image_str = '<img src="{0}" style="width: 45px; height:45px;" />'.format(obj.picture.url)
+            image_str = '<img src="{0}" style="width: 45px; height:45px;" />'.format(obj.picture)
         product_images = ProductImage.objects.filter(product=obj)        
         if product_images:
             for pro_img in product_images:
                 if pro_img.image:
                     try:
-                        image_str += ' <img src="{0}" style="width: 45px; height:45px;" />'.format(pro_img.image.url)
+                        image_str += ' <img src="{0}" style="width: 45px; height:45px;" />'.format(pro_img.image)
                     except :
                         pass
         return format_html(image_str)
@@ -106,6 +106,10 @@ class NewsletterAdmin(admin.ModelAdmin):
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
     icon_name = 'payment'
+    
+@admin.register(UserForgotPassword)
+class UserForgotPasswordAdmin(admin.ModelAdmin):
+    icon_name = 'password'
 # UnRegister your model.
 # admin.site.unregister(User)
 # admin.site.unregister(Group)
