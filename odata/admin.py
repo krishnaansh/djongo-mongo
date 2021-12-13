@@ -11,16 +11,8 @@ from odata.models import *
 from odata.exportimport.productresources import ProductResources
 
 # Register your models here.
-class PictureWidget(forms.widgets.FileInput):
-    def render(self, name, value, attrs=None, **kwargs):
-        input_html = super().render(name, value, attrs=None, **kwargs)
-        if value:
-            img_html = mark_safe(f'<img src="{value.url}" width="50" height="50"/>')
-            return f'{img_html}{input_html}'
-        else:            
-            return input_html
+
 class ProductModelForm(forms.ModelForm):
-    picture = ImageField(widget=PictureWidget)
     class Meta:
         model = Product
         fields = '__all__'

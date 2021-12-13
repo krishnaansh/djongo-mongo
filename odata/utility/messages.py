@@ -69,7 +69,7 @@ ERROR_CODE = {
     "change_password": {
         "invalid_new_password": "Current password and new password cannot be same.",
         "invalid_current_password": "Current password didn't match.",
-    },   
+    },
 }
 
 # success codes for responses

@@ -103,6 +103,14 @@ class Customer(models.Model):
             return self.first_name
         else:
             return ''
+    
+    @classmethod
+    def get(cls, email):
+        try:
+            user_detail = User.objects.get(email=email)
+            return cls.objects.get(user=user_detail)
+        except User.DoesNotExist:
+            return None
 
 
 class UserForgotPassword(models.Model):
@@ -154,8 +162,15 @@ class Product(models.Model):
     
     def get_absolute_url(self):
         return reverse("products", args=[str(self.id)])
-    
-    
+
+    @classmethod    
+    def get(cls, pro_id):
+        try:
+            return cls.objects.get(_id=pro_id)
+        except cls.DoesNotExist:
+            return None
+
+
 class ProductImage(models.Model):
     _id = models.ObjectIdField(primary_key=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
