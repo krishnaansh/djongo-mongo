@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block head %}
+<script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <button class="button is-primary" id="submitBtn">Purchase!</button>
+    </div>
+  </section>
+{% endblock %}
+{% block script %}
+<script>
+  const stripe = Stripe("{{STRIPE_PUBLISH_KEY}}")
+  function stripCheckout(){
+        // Get Checkout Session ID
+        fetch("/stripe/create-checkout?p_ids={{product_ids}}&qty={{quantity}}")
+        .then((result) => { return result.json(); })
+        .then((data) => {
+          console.log(data);
+          // Redirect to Stripe Checkout
+          return stripe.redirectToCheckout({sessionId: data.sessionId})
+        })
+        .then((res) => {
+          console.log(res);
+        });      
+  }
+  window.onload = stripCheckout
+</script>
+{% endblock %}
