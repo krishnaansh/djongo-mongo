@@ -11,8 +11,12 @@ from odata.models import *
 from odata.exportimport.productresources import ProductResources
 
 # Register your models here.
-
+categories = Categories.objects.all()
+categories_choice = [('', '-----')]
+if categories:
+    categories_choice = [(x._id, x.category_name) for x in categories]
 class ProductModelForm(forms.ModelForm):
+    category = forms.ChoiceField(choices=categories_choice)
     class Meta:
         model = Product
         fields = '__all__'

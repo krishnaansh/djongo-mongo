@@ -137,7 +137,7 @@ class Product(models.Model):
     _id = models.ObjectIdField(primary_key=True)        
     vendor_product_id = models.CharField(max_length=50,null=True,blank=True)
     product_name = models.CharField(max_length=100)    
-    category_id = models.ForeignKey(Categories, on_delete=models.PROTECT)
+    category = models.CharField(max_length=250, default='')
     quantity = models.IntegerField(default=0)
     price = models.FloatField()
     msrp = models.CharField(max_length=100, null=True,blank=True)
@@ -156,6 +156,7 @@ class Product(models.Model):
     product_highlight_de = models.TextField(max_length=200, blank=True, null=True)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
+    objects = models.DjongoManager()
 
     def __str__(self):
         return self.product_name or ' '
