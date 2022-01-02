@@ -13,22 +13,31 @@ from odata.models import (
 
 
 class ProductImageSerializers(serializers.ModelSerializer):
-    image_url = serializers.SerializerMethodField("get_image_url")
+    # image_url = serializers.SerializerMethodField("get_image_url")
 
     class Meta:
         model = ProductImage
-        fields = ("image_order", "image_url", "product")
+        fields = ("image_order", "image", "product")
 
-    def get_image_url(self, obj):
-        request = self.context.get("request")
-        image_url = obj.image.url
-        return request.build_absolute_uri(image_url)
+    # def get_image_url(self, obj):
+    #     request = self.context.get("request")
+    #     image_url = obj.image.url
+    #     return request.build_absolute_uri(image_url)
+    def to_representation(self, instance):
+        rep = super(ProductImageSerializers, self).to_representation(instance)
+        rep["product"] = str(rep["product"])
+        return rep
 
 
 class ProductVariantSerializers(serializers.ModelSerializer):
     class Meta:
         model = ProductVariant
         fields = "__all__"
+    
+    def to_representation(self, instance):
+        rep = super(ProductVariantSerializers, self).to_representation(instance)
+        rep["parent_product"] = str(rep["parent_product"])
+        return rep
 
 
 class ProductSerializers(serializers.ModelSerializer):
@@ -41,10 +50,10 @@ class ProductSerializers(serializers.ModelSerializer):
         Change in the response of api
         """
         rep = super(ProductSerializers, self).to_representation(instance)
-        product_image = ProductImage.objects.filter(product=instance).order_by("-id")
+        product_image = ProductImage.objects.filter(product=instance).order_by("-_id")
         product_variant = ProductVariant.objects.filter(
             parent_product=instance
-        ).order_by("-id")
+        ).order_by("-_id")
         rep["product_image"] = ProductImageSerializers(
             product_image, many=True, context={"request": self.context.get("request")}
         ).data
@@ -116,6 +125,11 @@ class CategorySerializers(serializers.ModelSerializer):
     class Meta:
         model = Categories
         fields = "__all__"
+    
+    def to_representation(self, instance):
+        rep = super(CategorySerializers, self).to_representation(instance)
+        rep["parent"] = str(rep["parent"])
+        return rep    
 
 
 class PaymentSerializers(serializers.ModelSerializer):
@@ -128,3 +142,8 @@ class PaymentSerializers(serializers.ModelSerializer):
 
         model = Payment
         fields = "__all__"
+    
+    def to_representation(self, instance):
+        rep = super(PaymentSerializers, self).to_representation(instance)
+        rep["customer"] = str(rep["customer"])
+        return rep
