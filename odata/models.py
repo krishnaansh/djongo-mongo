@@ -166,8 +166,9 @@ class Product(models.Model):
 
     @classmethod    
     def get(cls, pro_id):
+        from bson import ObjectId
         try:
-            return cls.objects.get(_id=pro_id)
+            return cls.objects.get(pk=ObjectId(pro_id))
         except cls.DoesNotExist:
             return None
 
