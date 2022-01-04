@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 # convert the errors to text
 from django.utils.encoding import force_text
 
-# admin.site.disable_action('delete_selected')
+admin.site.disable_action('delete_selected')
 # Register your models here.
 categories = Categories.objects.all()
 categories_choice = [('', '-----')]
