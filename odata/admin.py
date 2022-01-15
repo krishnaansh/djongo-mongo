@@ -65,7 +65,7 @@ class ProductModelInline(admin.TabularInline):
 class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     icon_name = 'store'
     resource_class = ProductResources
-    inlines= [ProductModelInline]
+    # inlines= [ProductModelInline]
     list_display = ('product_name','quantity','price', 'msrp','image_tag','created_at', 'updated_at')
     form = ProductModelForm
     list_per_page = 15
@@ -176,6 +176,38 @@ class CustomerAdmin(admin.ModelAdmin):
 
     make_deleted.short_description ='Delete selected customer'
     
+
+class ProductImageForm(forms.ModelForm):
+    product = forms.ChoiceField(choices=products_choice)
+    class Meta:
+        model = ProductImage
+        fields = "__all__"
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        if cleaned_data.get('product'):
+            product = Product.objects.get(pk=ObjectId(cleaned_data['product']))
+            cleaned_data['product'] = product
+
+        return cleaned_data
+
+
+@admin.register(ProductImage)
+class ProductImageAdmin(admin.ModelAdmin):
+    icon_name = 'child_friendly'
+    list_per_page = 15
+    search_fields = ('parent_product__title',)
+    form = ProductImageForm
+    actions = ['make_deleted']
+    
+    def make_deleted(modeladmin, request, queryset):
+        obj_ids = [ObjectId(i) for i in request.POST.getlist('_selected_action')]
+        for i in obj_ids:
+            query = ProductImage.objects.get(pk=i)
+            query.delete()
+
+    make_deleted.short_description ='Delete selected product variant'
+
 
 class ProductVariantForm(forms.ModelForm):
     parent_product = forms.ChoiceField(choices=products_choice)
