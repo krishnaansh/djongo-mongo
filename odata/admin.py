@@ -100,11 +100,28 @@ class ProductAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         super(ProductAdmin, self).save_model(request, obj, form, change)
 
+
+class CategoryForm(forms.ModelForm):
+    parent = forms.ChoiceField(choices=categories_choice)
+    class Meta:
+        model = Categories
+        fields = "__all__"
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        if cleaned_data.get('parent'):
+            product = Categories.objects.get(pk=ObjectId(cleaned_data['parent']))
+            cleaned_data['parent'] = product
+
+        return cleaned_data
+
 @admin.register(Categories)
 class CategoryAdmin(admin.ModelAdmin):
     icon_name = 'device_hub'
     search_fields = ('category_name', )
     list_per_page = 15
+    form = CategoryForm
+    list_display = ('category_name', 'parent', 'category_name_de')
     actions = ['make_deleted']
     
     
